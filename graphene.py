@@ -58,7 +58,7 @@ def saveAndPlotImageData(image, p1, p2, imageDirName, show=True):
                delimiter=",")
 
     # Plot the data and analyse it
-    fig = plt.figure()
+    fig = plt.figure(figsize=(9, 6.5))
     ax1 = fig.add_subplot(221)
     ax2 = fig.add_subplot(222)
     ax3 = fig.add_subplot(223)
@@ -115,8 +115,10 @@ def saveRGBChannelGreyscaleImages(image, p1, p2, imageDirName, show=True):
 def main():
     if not os.path.exists(outputDirName):
         os.mkdir(outputDirName)
-    # analyze("./Photos/DSL30047.TIF", (1282, 844), (1224, 998))
-    analyze("./Photos/DSL30048.TIF", (1079, 900), (1454, 1092))
+
+    analyze("./Photos/300nm/DSL30048.TIF", (1079, 900), (1454, 1092))
+    # analyze("./Photos/UnknownThickness/DSL30001-Unkown-Thickness.TIF",
+    #         (1454, 627), (1548, 772))
 
     cv2.destroyAllWindows()
 
