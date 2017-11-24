@@ -88,17 +88,29 @@ def saveAndPlotImageData(image, p1, p2, imageDirName, show=True):
     ax3 = fig2.add_subplot(223)
     ax4 = fig2.add_subplot(224)
 
-    bins = 256
-    ax1.hist(redPoints, bins=bins)
-    ax2.hist(greenPoints, bins=bins)
-    ax3.hist(bluePoints, bins=bins)
-    ax4.hist(avgPoints, bins=bins)
+    bins = 128
+    ax1.hist(redPoints, bins=bins, color='red')
+    ax1.set_xlabel("Red Channel Intensity")
+    ax1.set_ylabel("Counts")
+
+    ax2.hist(greenPoints, bins=bins, color='green')
+    ax2.set_xlabel("Green Channel Intensity")
+    ax2.set_ylabel("Counts")
+
+    ax3.hist(bluePoints, bins=bins, color='blue')
+    ax3.set_xlabel("Blue Channel Intensity")
+    ax3.set_ylabel("Counts")
+
+    ax4.hist(avgPoints, bins=bins, color='black')
+    ax4.set_xlabel("Average RGB Intensity")
+    ax4.set_ylabel("Counts")
 
     if show:
         fig1.show()
         fig2.show()
 
     fig1.savefig(imageDirName + "plots.png")
+    fig2.savefig(imageDirName + "histograms.png")
 
 
 def saveRGBChannelGreyscaleImages(image, p1, p2, imageDirName, show=True):
@@ -149,9 +161,9 @@ def main():
     if not os.path.exists(outputDirName):
         os.mkdir(outputDirName)
 
-    analyze("./Photos/300nm/DSL30007.TIF", (1194, 1339), (1433, 1173))
-    # analyze("./Photos/UnknownThickness/DSL30001-Unkown-Thickness.TIF",
-    #         (1454, 627), (1548, 772))
+    # analyze("./Photos/300nm/DSL30008.TIF", (1160, 1345), (1241, 1308))
+    analyze("./Photos/UnknownThickness/DSL30001-Unkown-Thickness.TIF",
+            (1454, 627), (1548, 772))
 
     cv2.destroyAllWindows()
 
