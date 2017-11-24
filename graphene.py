@@ -36,7 +36,7 @@ def saveAndPlotImageData(image, p1, p2, imageDirName, show=True):
     greenPoints = []
     bluePoints = []
     for x, y in points:
-        red, green, blue = image[y][x]
+        blue, green, red = image[y][x]
         redPoints.append(red)
         bluePoints.append(blue)
         greenPoints.append(green)
@@ -44,24 +44,27 @@ def saveAndPlotImageData(image, p1, p2, imageDirName, show=True):
     redPoints = np.array(redPoints)
     bluePoints = np.array(bluePoints)
     greenPoints = np.array(greenPoints)
+    avgPoints = (redPoints + bluePoints + greenPoints)/3
     pixelDistances = np.arange(0, len(redPoints))
 
     # Save in to matriax. Serialize into CSV for later analysis
-    combined = np.zeros((len(redPoints), 4))
+    combined = np.zeros((len(redPoints), 5))
     combined[:, 0] = pixelDistances
     combined[:, 1] = redPoints
     combined[:, 2] = greenPoints
     combined[:, 3] = bluePoints
+    combined[:, 4] = avgPoints
 
     np.savetxt(imageDirName + 'RGB_Channels.csv',
-               combined.astype(int),
+               combined,
                delimiter=",")
 
     # Plot the data and analyse it
-    fig = plt.figure(figsize=(9, 6.5))
-    ax1 = fig.add_subplot(221)
-    ax2 = fig.add_subplot(222)
-    ax3 = fig.add_subplot(223)
+    fig1 = plt.figure(figsize=(9, 6.5))
+    ax1 = fig1.add_subplot(221)
+    ax2 = fig1.add_subplot(222)
+    ax3 = fig1.add_subplot(223)
+    ax4 = fig1.add_subplot(224)
 
     ax1.plot(pixelDistances, redPoints, 'r')
     ax1.set_xlabel("Distance [pixels]")
@@ -75,23 +78,48 @@ def saveAndPlotImageData(image, p1, p2, imageDirName, show=True):
     ax3.set_xlabel("Distance [pixels]")
     ax3.set_ylabel("Blue Channel Intensity")
 
-    if show:
-        fig.show()
+    ax4.plot(pixelDistances, avgPoints, 'black')
+    ax4.set_xlabel("Distance [pixels]")
+    ax4.set_ylabel("Average RGB Intensity Values")
 
-    fig.savefig(imageDirName + "plots.png")
+    fig2 = plt.figure(figsize=(9, 6.5))
+    ax1 = fig2.add_subplot(221)
+    ax2 = fig2.add_subplot(222)
+    ax3 = fig2.add_subplot(223)
+    ax4 = fig2.add_subplot(224)
+
+    bins = 256
+    ax1.hist(redPoints, bins=bins)
+    ax2.hist(greenPoints, bins=bins)
+    ax3.hist(bluePoints, bins=bins)
+    ax4.hist(avgPoints, bins=bins)
+
+    if show:
+        fig1.show()
+        fig2.show()
+
+    fig1.savefig(imageDirName + "plots.png")
 
 
 def saveRGBChannelGreyscaleImages(image, p1, p2, imageDirName, show=True):
     """
     Displays the line where the image was analyzed
     """
-    thickness = 5
+    thickness = 2
+    shade = 255
     blueChannel, greenChannel, redChannel = cv2.split(image)
 
-    cv2.line(blueChannel, p1, p2, 255, thickness)
-    cv2.line(greenChannel, p1, p2, 255, thickness)
-    cv2.line(redChannel, p1, p2, 255, thickness)
+    cv2.line(image, p1, p2, shade, thickness)
+    cv2.line(blueChannel, p1, p2, shade, thickness)
+    cv2.line(greenChannel, p1, p2, shade, thickness)
+    cv2.line(redChannel, p1, p2, shade, thickness)
 
+    cv2.circle(image, p1, thickness + 5, shade, thickness=thickness)
+    cv2.circle(blueChannel, p1, thickness + 5, shade, thickness=thickness)
+    cv2.circle(greenChannel, p1, thickness + 5, shade, thickness=thickness)
+    cv2.circle(redChannel, p1, thickness + 5, shade, thickness=thickness)
+
+    cv2.imwrite(imageDirName + "originalImage.png", image)
     cv2.imwrite(imageDirName + "blueChannel.png", blueChannel)
     cv2.imwrite(imageDirName + "redChannel.png", redChannel)
     cv2.imwrite(imageDirName + "greenChannel.png", greenChannel)
@@ -108,6 +136,11 @@ def saveRGBChannelGreyscaleImages(image, p1, p2, imageDirName, show=True):
         cv2.namedWindow('Red', cv2.WINDOW_NORMAL)
         cv2.resizeWindow('Red', 600, 600)
         cv2.imshow('Red', redChannel)
+
+        cv2.namedWindow('Original', cv2.WINDOW_NORMAL)
+        cv2.resizeWindow('Original', 600, 600)
+        cv2.imshow('Original', image)
+
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -116,7 +149,7 @@ def main():
     if not os.path.exists(outputDirName):
         os.mkdir(outputDirName)
 
-    analyze("./Photos/300nm/DSL30048.TIF", (1079, 900), (1454, 1092))
+    analyze("./Photos/300nm/DSL30007.TIF", (1194, 1339), (1433, 1173))
     # analyze("./Photos/UnknownThickness/DSL30001-Unkown-Thickness.TIF",
     #         (1454, 627), (1548, 772))
 
