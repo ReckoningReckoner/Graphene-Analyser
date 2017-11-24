@@ -22,13 +22,13 @@ def analyze(filename, p1, p2, imageName=None, show=True):
         os.mkdir(imageDirName)
 
     image = cv2.imread(filename)
-    plotData(image, p1, p2, imageDirName)
-    # showChannels(image, p1, p2, imageDirName)
+    saveAndPlotImageData(image, p1, p2, imageDirName)
+    saveRGBChannelGreyscaleImages(image, p1, p2, imageDirName)
 
 
-def plotData(image, p1, p2, imageDirName, show=True):
+def saveAndPlotImageData(image, p1, p2, imageDirName, show=True):
     """
-    Plots the RGB channel outputs for the image.
+    Saves and plots the RGB channel outputs for the image.
     """
     # Get the points on the line
     points = bresenham(p1[0], p1[1], p2[0], p2[1])
@@ -57,30 +57,31 @@ def plotData(image, p1, p2, imageDirName, show=True):
                combined.astype(int),
                delimiter=",")
 
-    # fig = plt.figure()
-    # ax1 = fig.add_subplot(221)
-    # ax2 = fig.add_subplot(222)
-    # ax3 = fig.add_subplot(223)
+    # Plot the data and analyse it
+    fig = plt.figure()
+    ax1 = fig.add_subplot(221)
+    ax2 = fig.add_subplot(222)
+    ax3 = fig.add_subplot(223)
 
-    # ax1.plot(pixelDistances, redPoints, 'r')
-    # ax1.set_xlabel("Distance [pixels]")
-    # ax1.set_ylabel("Red Channel Intensity")
+    ax1.plot(pixelDistances, redPoints, 'r')
+    ax1.set_xlabel("Distance [pixels]")
+    ax1.set_ylabel("Red Channel Intensity")
 
-    # ax2.plot(pixelDistances, greenPoints, 'g')
-    # ax2.set_xlabel("Distance [pixels]")
-    # ax2.set_ylabel("Green Channel Intensity")
+    ax2.plot(pixelDistances, greenPoints, 'g')
+    ax2.set_xlabel("Distance [pixels]")
+    ax2.set_ylabel("Green Channel Intensity")
 
-    # ax3.plot(pixelDistances, bluePoints, 'b')
-    # ax3.set_xlabel("Distance [pixels]")
-    # ax3.set_ylabel("Blue Channel Intensity")
+    ax3.plot(pixelDistances, bluePoints, 'b')
+    ax3.set_xlabel("Distance [pixels]")
+    ax3.set_ylabel("Blue Channel Intensity")
 
-    # if show:
-    #     fig.show()
+    if show:
+        fig.show()
 
-    # fig.savefig(imageDirName + "plots.png")
+    fig.savefig(imageDirName + "plots.png")
 
 
-def showChannels(image, p1, p2, imageDirName, show=True):
+def saveRGBChannelGreyscaleImages(image, p1, p2, imageDirName, show=True):
     """
     Displays the line where the image was analyzed
     """
