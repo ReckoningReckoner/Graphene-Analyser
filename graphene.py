@@ -5,14 +5,15 @@ import matplotlib.pyplot as plt
 import os
 
 
-outputDirName = "Output"
-
-
 def analyze(filename, p1, p2, imageName=None, show=True):
     """
     Pass in a filename, and two tuples containing xy
     coordinates
     """
+    outputDirName = "Output"
+    if not os.path.exists(outputDirName):
+        os.mkdir(outputDirName)
+
     if imageName is None:
         imageName = filename.split("/")[-1].split(".")[0]
 
@@ -158,9 +159,6 @@ def saveRGBChannelGreyscaleImages(image, p1, p2, imageDirName, show=True):
 
 
 def main():
-    if not os.path.exists(outputDirName):
-        os.mkdir(outputDirName)
-
     # analyze("./Photos/300nm/DSL30008.TIF", (1160, 1345), (1241, 1308))
     analyze("./Photos/UnknownThickness/DSL30001-Unkown-Thickness.TIF",
             (1454, 627), (1548, 772))
